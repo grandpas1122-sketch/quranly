@@ -619,7 +619,7 @@ function Home() {
         </nav>
         <small>© 2026 Qur’anly. A little every day.</small>
         <button className="back-top" onClick={() => scrollTo("top")} aria-label="Back to top">
-          Back to top ↑
+        
         </button>
       </footer>
       <a href="/donate" style={{ textDecoration: "none" }}>

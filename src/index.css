@@ -1452,13 +1452,26 @@ footer > small {
     width: auto;
     height: 45px;
   }
+  .brand-button {
+    flex: 0 0 auto;
+  }
   .logo-mark,
   .logo-mark > img:first-child {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
+  }
+  .logo-book {
+    width: 20px;
+    left: 8px;
+    top: 12px;
+  }
+  .logo-seed {
+    width: 2.5px;
+    left: 17px;
+    top: 12px;
   }
   .logo-word {
-    font-size: 24px;
+    font-size: 22px;
   }
   .hero {
     display: flex;
