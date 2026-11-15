@@ -618,7 +618,7 @@ function Home() {
           <button onClick={() => setModal("waitlist")}>Join waitlist</button>
         </nav>
         <small>© 2026 Qur’anly. A little every day.</small>
-        <button className="back-top" onClick={() => scrollTo("top")}>
+        <button className="back-top" onClick={() => scrollTo("top")} aria-label="Back to top">
           Back to top ↑
         </button>
       </footer>

@@ -1249,6 +1249,12 @@ footer > small {
   font-family: "DM Sans:Bold";
   font-size: 14px;
 }
+
+@media (max-width: 768px) {
+  .back-top {
+    display: none;
+  }
+}
 .support-pill {
   position: fixed;
   right: 22px;

@@ -140,7 +140,7 @@ function SuccessModal({ isOpen, onClose, amount }: { isOpen: boolean; onClose: (
         <div className="success-content">
           <h2>Jazakallahu Khayran!</h2>
           <p className="success-message">
-            Your Sadaqah of <strong>₦{Number(amount).toLocaleString()}</strong> has been received.
+            Your Sadaqah of <strong>₦{Number(amount).toLocaleString()}</strong> will be received.
           </p>
           <p className="success-dua">
             May Allah accept it from you and make it a source of ongoing reward (Sadaqah Jariyah).
@@ -224,17 +224,23 @@ function DonationForm() {
     // Send email notification
     if (donorEmail) {
       try {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const reference = `QUR-${now.toString(36).toUpperCase()}`;
+        
         await emailjs.send(
           "service_idguhgy",
           "template_60skcuz",
           {
-            to_email: "monsurrajiybs@gmail.com",
-            donor_name: donorName || "Anonymous",
-            donor_email: donorEmail,
-            amount: amount,
+            name: donorName || "Anonymous",
             currency: currency,
-            reference: `QUR-${Date.now().toString(36).toUpperCase()}`,
-            date: new Date().toLocaleString(),
+            amount: amount,
+            time: timeStr,
+            message: "Bank transfer donation", // or donor message if you add a field
+            reference: reference,
+            date: now.toLocaleDateString(),
+            donor_email: donorEmail,
+            email: donorEmail,
           },
           "_Ilcrgk_nxzz0DNf9"
         );
