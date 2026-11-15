@@ -1,5 +1,6 @@
 import { FormEvent, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 
 const assets = "/assets";
 
@@ -70,7 +71,7 @@ const questions = [
   ],
 ];
 
-function BankDetailsModal({ isOpen, onClose, amount }: { isOpen: boolean; onClose: () => void; amount: string }) {
+function BankDetailsModal({ isOpen, onClose, amount, donorName, donorEmail, onSent }: { isOpen: boolean; onClose: () => void; amount: string; donorName: string; donorEmail: string; onSent: () => void }) {
   if (!isOpen) return null;
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -84,16 +85,18 @@ function BankDetailsModal({ isOpen, onClose, amount }: { isOpen: boolean; onClos
           <div className="bank-details-card">
             <div className="bank-row">
               <span className="bank-label">Bank</span>
-              <span className="bank-value">GTBank (Guaranty Trust Bank)</span>
+              <span className="bank-value">
+	OPay (OPay Digital Services)
+</span>
             </div>
             <div className="bank-row">
               <span className="bank-label">Account Name</span>
-              <span className="bank-value">Qur'anly Learning Solutions</span>
+              <span className="bank-value">Monsur Raji</span>
             </div>
             <div className="bank-row">
               <span className="bank-label">Account Number</span>
-              <span className="bank-value copyable" onClick={() => navigator.clipboard.writeText("0123456789")}>
-                0123 4567 89 <span className="copy-hint">Tap to copy</span>
+              <span className="bank-value copyable" onClick={() => navigator.clipboard.writeText("7015038977")}>
+                701 503 8977 <span className="copy-hint">Tap to copy</span>
               </span>
             </div>
             <div className="bank-row">
@@ -108,7 +111,7 @@ function BankDetailsModal({ isOpen, onClose, amount }: { isOpen: boolean; onClos
           
           <div className="modal-actions">
             <button className="secondary" onClick={onClose}>Cancel</button>
-            <button className="primary sent-btn" onClick={() => window.dispatchEvent(new CustomEvent('sadaqah-sent', { detail: { amount } }))}>
+            <button className="primary sent-btn" onClick={onSent}>
               I've Sent
             </button>
           </div>
@@ -189,6 +192,8 @@ function DonationForm() {
   const [submitted, setSubmitted] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [donorName, setDonorName] = useState("");
+  const [donorEmail, setDonorEmail] = useState("");
   const symbol = currency === "USD" ? "$" : "₦";
   const amounts = currency === "USD" ? ["10", "25", "50", "100"] : ["5000", "10000", "25000", "50000"];
 
@@ -212,16 +217,33 @@ function DonationForm() {
     }
   };
 
-  const handleSadaqahSent = () => {
+  const handleSadaqahSent = async () => {
     setShowBankModal(false);
     setShowSuccessModal(true);
-  };
 
-  useEffect(() => {
-    const handler = (e: any) => handleSadaqahSent();
-    window.addEventListener("sadaqah-sent", handler);
-    return () => window.removeEventListener("sadaqah-sent", handler);
-  }, []);
+    // Send email notification
+    if (donorEmail) {
+      try {
+        await emailjs.send(
+          "service_idguhgy",
+          "template_60skcuz",
+          {
+            to_email: "monsurrajiybs@gmail.com",
+            donor_name: donorName || "Anonymous",
+            donor_email: donorEmail,
+            amount: amount,
+            currency: currency,
+            reference: `QUR-${Date.now().toString(36).toUpperCase()}`,
+            date: new Date().toLocaleString(),
+          },
+          "_Ilcrgk_nxzz0DNf9"
+        );
+        console.log("Donation email sent successfully");
+      } catch (error) {
+        console.error("Failed to send donation email:", error);
+      }
+    }
+  };
 
   return (
     <>
@@ -290,7 +312,12 @@ function DonationForm() {
           <div className="split-fields">
             <label>
               Full name (optional)
-              <input type="text" placeholder="Your name" />
+              <input
+                type="text"
+                placeholder="Your name"
+                value={donorName}
+                onChange={(e) => setDonorName(e.target.value)}
+              />
             </label>
             <label>
               Country / region
@@ -302,7 +329,13 @@ function DonationForm() {
 
           <label>
             Email for your receipt
-            <input type="email" placeholder="you@example.com" required />
+            <input
+              type="email"
+              placeholder="you@example.com"
+              required
+              value={donorEmail}
+              onChange={(e) => setDonorEmail(e.target.value)}
+            />
           </label>
 
           <fieldset>
@@ -361,7 +394,14 @@ function DonationForm() {
         </form>
       </div>
 
-      <BankDetailsModal isOpen={showBankModal} onClose={() => setShowBankModal(false)} amount={amount} />
+      <BankDetailsModal
+        isOpen={showBankModal}
+        onClose={() => setShowBankModal(false)}
+        amount={amount}
+        donorName={donorName}
+        donorEmail={donorEmail}
+        onSent={handleSadaqahSent}
+      />
       <SuccessModal isOpen={showSuccessModal} onClose={() => { setShowSuccessModal(false); setSubmitted(false); }} amount={amount} />
     </>
   );
