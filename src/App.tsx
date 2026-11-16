@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Donate from "./Donate";
+import Donate, { WaitlistModal } from "./Donate";
 
 const A = "/assets";
 
@@ -247,10 +247,13 @@ function PhonePrototype() {
 
 function Modal({ kind, close }: { kind: Exclude<ModalKind, null>; close: () => void }) {
   const [done, setDone] = useState(false);
+  if (kind === "waitlist") {
+    return <WaitlistModal isOpen={true} onClose={close} />;
+  }
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget));
-    const key = kind === "waitlist" ? "quranly-waitlist" : "quranly-support";
+    const key = "quranly-support";
     const existing = JSON.parse(localStorage.getItem(key) || "[]");
     localStorage.setItem(
       key,

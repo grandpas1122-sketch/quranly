@@ -1349,6 +1349,71 @@ footer > small {
   font-size: 10px;
   margin-top: 14px;
 }
+
+/* Device Options Radio Buttons */
+.device-options {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+.device-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  border: 2px solid #cbd9d0;
+  border-radius: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+.device-option:hover {
+  border-color: var(--emerald);
+}
+.device-option.selected {
+  border-color: var(--emerald);
+  background: var(--sage);
+  box-shadow: 0 0 0 3px rgba(224, 238, 220, 0.5);
+}
+.device-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.device-icon {
+  font-size: 28px;
+}
+.device-label {
+  font-family: "DM Sans:Bold";
+  font-size: 14px;
+  color: var(--forest);
+  font-weight: 700;
+}
+.device-option.selected .device-label {
+  color: var(--emerald);
+}
+
+/* Desktop: smaller device options */
+@media (min-width: 769px) {
+  .device-options {
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .device-option {
+    padding: 12px 10px;
+    gap: 6px;
+    border-radius: 10px;
+  }
+  .device-icon {
+    font-size: 22px;
+  }
+  .device-label {
+    font-size: 12px;
+  }
+}
+
 .success-state {
   text-align: center;
   padding: 30px 0;

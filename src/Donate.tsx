@@ -159,7 +159,44 @@ function SuccessModal({ isOpen, onClose, amount }: { isOpen: boolean; onClose: (
   );
 }
 
-function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [device, setDevice] = useState<"iOS" | "Android" | "">("");
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setMessage("");
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      device: device || formData.get("device"),
+      time: new Date().toLocaleString(),
+    };
+
+    try {
+      const response = await fetch("https://formspree.io/f/xrpqpopo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        onClose();
+        alert("Thank you! You're on the waitlist. We'll notify you when Qur'anly launches.");
+      } else {
+        setMessage("Something went wrong. Please try again.");
+      }
+    } catch {
+      setMessage("Network error. Please check your connection.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (!isOpen) return null;
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -168,18 +205,50 @@ function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         <span className="eyebrow">EARLY ACCESS</span>
         <h2>Join the Qur'anly waitlist.</h2>
         <p>Be among the first to build a gentler daily Qur'an practice.</p>
-        <form onSubmit={(e) => { e.preventDefault(); onClose(); alert("Thank you! You're on the waitlist."); }}>
+        <form onSubmit={handleSubmit}>
           <label>
             Name
-            <input name="name" required placeholder="Your name" />
+            <input name="name" required placeholder="Your name" disabled={submitting} />
           </label>
           <label>
             Email
-            <input name="email" type="email" required placeholder="you@example.com" />
+            <input name="email" type="email" required placeholder="you@example.com" disabled={submitting} />
           </label>
-          <button type="submit" className="primary">Join the waitlist <span>↗</span></button>
+          <fieldset>
+            <legend>Device</legend>
+            <div className="device-options">
+              <label className={`device-option ${device === "iOS" ? "selected" : ""}`}>
+                <input
+                  type="radio"
+                  name="device"
+                  value="iOS"
+                  checked={device === "iOS"}
+                  onChange={() => setDevice("iOS")}
+                  disabled={submitting}
+                />
+                <span className="device-icon">📱</span>
+                <span className="device-label">iOS (iPhone/iPad)</span>
+              </label>
+              <label className={`device-option ${device === "Android" ? "selected" : ""}`}>
+                <input
+                  type="radio"
+                  name="device"
+                  value="Android"
+                  checked={device === "Android"}
+                  onChange={() => setDevice("Android")}
+                  disabled={submitting}
+                />
+                <span className="device-icon">🤖</span>
+                <span className="device-label">Android</span>
+              </label>
+            </div>
+          </fieldset>
+          <button type="submit" className="primary" disabled={submitting}>
+            {submitting ? "Joining..." : "Join the waitlist"}
+          </button>
         </form>
-        <small>Stored privately on this device for this frontend demo.</small>
+        {message && <p style={{ color: "var(--peach)", marginTop: "12px", fontSize: "14px" }}>{message}</p>}
+        <small>Stored privately. We'll only email you about the launch.</small>
       </div>
     </div>
   );
