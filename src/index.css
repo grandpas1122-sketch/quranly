@@ -1353,18 +1353,18 @@ footer > small {
 /* Device Options Radio Buttons */
 .device-options {
   display: flex;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 8px;
 }
 .device-option {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 12px;
+  gap: 6px;
+  padding: 12px 8px;
   border: 2px solid #cbd9d0;
-  border-radius: 14px;
+  border-radius: 10px;
   background: white;
   cursor: pointer;
   transition: all 150ms ease;
@@ -1383,11 +1383,11 @@ footer > small {
   pointer-events: none;
 }
 .device-icon {
-  font-size: 28px;
+  font-size: 22px;
 }
 .device-label {
   font-family: "DM Sans:Bold";
-  font-size: 14px;
+  font-size: 12px;
   color: var(--forest);
   font-weight: 700;
 }
@@ -1395,22 +1395,21 @@ footer > small {
   color: var(--emerald);
 }
 
-/* Desktop: smaller device options */
-@media (min-width: 769px) {
+/* Mobile: even smaller */
+@media (max-width: 480px) {
   .device-options {
-    gap: 10px;
-    margin-top: 8px;
+    gap: 6px;
   }
   .device-option {
-    padding: 12px 10px;
-    gap: 6px;
-    border-radius: 10px;
+    padding: 10px 6px;
+    gap: 4px;
+    border-radius: 8px;
   }
   .device-icon {
-    font-size: 22px;
+    font-size: 18px;
   }
   .device-label {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
